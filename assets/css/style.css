@@ -749,6 +749,11 @@ section#how-it-works {
   padding: 0 0 0 100px;
 }
 
+.contact-submit {
+  text-align: right;
+  padding: 0 0 0 0;
+}
+
 #contact-submit button {
   border: 1px solid var(--black);
   border-radius: var(--border-radius);
@@ -765,6 +770,10 @@ section#how-it-works {
 --------------------------------------------------------------*/
 .footer {
   padding: 5rem 0 2.5rem 0;
+}
+
+footer.footer {
+  background-color: #e4e4e4;
 }
 
 .footer h3 {

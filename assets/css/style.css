@@ -34,7 +34,7 @@ body {
   background-color: #ededed;
 }
 
-a {
+a, button {
   color: #000000;
   text-decoration: none;
   padding: 10px 20px;
@@ -190,7 +190,7 @@ section {
 }
 
 #nav-menu.header-scrolled {
-   background: rgba(237, 237, 237, 0.6);
+  background: linear-gradient(#ededed, transparent);
 }
 
 
@@ -429,7 +429,7 @@ section {
 }
 
 .hero-sub {
-  padding: 200px 0 60px 0;
+  padding: 200px 0 0 0;
   text-align: center;
   margin: 0 auto;
 }
@@ -542,7 +542,7 @@ section {
 }
 
 .service-more {
-  padding: 40px 0 30px 0;
+  padding: 40px 0 0 0;
 }
 
 .hero-text.service-more p {
@@ -567,7 +567,7 @@ section {
 /* Product Section */
 
 .prod-head-text {
-  padding: 40px 0 90px 0;
+  padding: 40px 0 0 0;
 }
 
 .prod-para p {
@@ -605,15 +605,36 @@ section {
   background-color: var(--black);
 }
 
+section#product-section {
+  padding: 60px 0 50px 0;
+}
+
 /* How it works */
+section#how-it-works {
+  padding: 0 0 60px 0;
+}
+
+#how-it-works::before, #contact::before {
+  content: '';
+  display: block;
+  height: 140px;
+  margin-top: -70px;
+  visibility: hidden;
+}
+
 .how-heading h3 {
   font-size: 40px;
   font-weight: 300;
   position: relative;
   padding: 0 0 10px 0;
   letter-spacing: 5px;
-  border-bottom: 1px solid var(--black);
   text-align: center;
+}
+
+.how-heading hr{
+  margin: 0;
+  color: var(--black);
+  opacity: 1;
 }
 
 .how-img-text {
@@ -689,134 +710,55 @@ section {
 /*--------------------------------------------------------------
 # Contact
 --------------------------------------------------------------*/
-.contact .info-box {
-  color: #444444;
-  text-align: center;
-  box-shadow: 0 0 30px rgba(214, 215, 216, 0.6);
-  padding: 30px 0 32px 0;
-  border-radius: 4px;
+
+.form-group {
+  margin-bottom: 20px;
 }
 
-.contact .info-box i {
-  font-size: 32px;
-  color: var(--black);
-  border-radius: 50%;
-  padding: 8px;
+.form-group input{
+  padding: 10px;
+  border: none;
+  border-bottom: 1px solid var(--black);
+  border-radius: 0;
+  background: no-repeat;
+}
+.form-group input[type="submit"] {
+  cursor: pointer;
 }
 
-.contact .info-box h3 {
-  font-size: 20px;
-  color: #000;
-  font-weight: 700;
-  margin: 10px 0;
-}
-
-.contact .info-box p {
-  padding: 0;
-  line-height: 24px;
-  font-size: 14px;
-  margin-bottom: 0;
-}
-
-.contact .info-box p a{
-  color: #000;
-}
-
-.contact .php-email-form {
-  box-shadow: 0 0 30px rgba(214, 215, 216, 0.6);
-  padding: 30px;
-  border-radius: 4px;
-}
-
-.contact .php-email-form .error-message {
-  display: none;
-  color: #fff;
-  background: var(--black);
-  text-align: left;
-  padding: 15px;
-  font-weight: 600;
-}
-
-.contact .php-email-form .error-message br+br {
-  margin-top: 25px;
-}
-
-.contact .php-email-form .sent-message {
-  display: none;
-  color: #fff;
-  background: #18d26e;
-  text-align: center;
-  padding: 15px;
-  font-weight: 600;
-}
-
-.contact .php-email-form .loading {
-  display: none;
-  background: #fff;
-  text-align: center;
-  padding: 15px;
-}
-
-.contact .php-email-form .loading:before {
-  content: "";
-  display: inline-block;
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  margin: 0 10px -6px 0;
-  border: 3px solid #18d26e;
-  border-top-color: #eee;
-  animation: animate-loading 1s linear infinite;
-}
-
-.contact .php-email-form .form-group {
-  margin-bottom: 25px;
-}
-
-.contact .php-email-form input,
-.contact .php-email-form textarea {
-  box-shadow: none;
-  font-size: 14px;
-  border-radius: 4px;
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
   border: 1px solid var(--black);
+  background: transparent;
+  border-radius: 0;
 }
 
-.contact .php-email-form input:focus,
-.contact .php-email-form textarea:focus {
-  border-color: #111111;
+.form-control:focus {
+  background-color: transparent;
+  border-color: var(--black);
+  outline: 0;
+  box-shadow: none;
 }
 
-.contact .php-email-form input {
-  padding: 5px 15px;
+.php-email-form {
+  margin: 30px 0 0 0;
 }
 
-.contact .php-email-form textarea {
-  padding: 12px 15px;
+.col-md-8.text-message {
+  padding: 0 0 0 100px;
 }
 
-.contact .php-email-form button[type=submit] {
-  background: var(--black);
-  border: 0;
-  padding: 5px 32px;
-  color: #fff;
-  transition: 0.4s;
-  border-radius: 4px;
+#contact-submit button {
+  border: 1px solid var(--black);
+  border-radius: var(--border-radius);
+  margin: 30px 0 0 0;
 }
 
-.contact .php-email-form button[type=submit]:hover {
-  background: var(--black);
+#contact-submit button:hover{
+  color: var(--gray);
+  background-color: var(--black);
 }
-
-@keyframes animate-loading {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
 
 /*--------------------------------------------------------------
 # Footer
@@ -898,13 +840,26 @@ section {
   padding: 0 10px 0 0;
 }
 
-.copy-right h4 {
-  padding: 20px 0 0 0;
+.copy-right p {
+  margin: 0 0 5px 0;
+  text-align: center;
+}
+.copy-right {
+  margin: 20px 0 0 0;
+}
+
+.connect-details a span {
+  padding: 0 10px 0 0;
   font-size: 20px;
 }
 
-.copy-right p {
-  margin: 0 0 5px 0;
+.footer .connect-details a {
+  padding: 0 0 15px 0;
+  display: inline-block;
+}
+
+ul.list-unstyled.connect-details {
+  margin: 0;
 }
 
 /*--------------------------------------------------------------

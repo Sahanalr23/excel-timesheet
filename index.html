@@ -49,8 +49,8 @@
 
         <nav class="menu">
           <ul class="menu-bar">
-            <li><a class="nav-link" href="about.html">About</a></li>
-            <li><a class="nav-link" href="#how-it-works">How it works</a></li>
+            <li><a class="nav-link" href="">Services</a></li>
+            <li><a class="nav-link" href="#how-it-works">How it Works</a></li>
             <li>
               <button class="nav-link dropdown-btn" data-dropdown="dropdown1" aria-haspopup="true" aria-expanded="false" aria-label="browse">
                 Products
@@ -133,7 +133,7 @@
                 </ul>
               </div> -->
             </li>
-            <li><a class="nav-link" href="">Services</a></li>
+            <li><a class="nav-link" href="about.html">About</a></li>
             <li><a class="nav-link" href="#contact">Contact</a></li>
             <li><a class="nav-link raise-btn" href="">Submit A ticket</a></li>
             <!-- <li>
@@ -178,15 +178,15 @@
   <section id="hero" class="d-flex align-items-center">
     <div class="hero-sub">
 
-      <div class="container" data-aos="zoom-out" data-aos-delay="50">
+      <div class="container">
 
-        <div class="row hero-img">
+        <div class="row hero-img" data-aos="zoom-out" data-aos-delay="50">
           <div class="col-md-12">
             <img src="assets/img/hero-img.png" alt="hero-logo" class="hero-logo">
           </div>
         </div>
 
-        <div class="row hero-line-parent">
+        <div class="row hero-line-parent" data-aos="fade-up" data-aos-delay="70">
           <div class="col-md-12">
            <div class="hero-line"></div>
           </div>
@@ -199,7 +199,7 @@
           </div>
         </div>
 
-        <div class="row hero-line-parent second-line">
+        <div class="row hero-line-parent second-line" data-aos="fade-up" data-aos-delay="50">
           <div class="col-md-12">
            <div class="hero-line"></div>
           </div>
@@ -218,7 +218,7 @@
           </div>
         </div>
 
-        <div class="row service-section-desc"  data-aos="fade-up" data-aos-delay="50">
+        <div class="row service-section-desc"  data-aos="fade-right" data-aos-delay="50">
           <div class="col-container">
 
             <div class="service-col">
@@ -308,13 +308,14 @@
     <section class="howItworks" id="how-it-works">
       <div class="container">
 
-        <div class="row how-heading" data-aos="fade-up" data-aos-delay="50">
+        <div class="row how-heading">
           <div class="col-md-12">
-            <h3>How it Works</h3>
+            <h3 data-aos="zoom-in" data-aos-delay="50">How it Works</h3>
+            <hr data-aos="zoom-in" data-aos-delay="50">
           </div>
         </div>
 
-       <div class="row how-img-text" data-aos="zoom-out" data-aos-delay="50">
+       <div class="row how-img-text" data-aos="fade-up data-aos-delay="50">
         <div class="col-md-7 how-work-text">
           <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut ore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minimza veniam, quis nostrum  voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minimza veniam, quis nostrum</p>
           <a href="#">Book Now</a>
@@ -395,7 +396,7 @@
 
     <!-- ======= Contact Section ======= -->
     <section class="contact">
-      <div class="container" data-aos="fade-up">
+      <div class="container">
 
         <div class="row">
           <div class="col-md-12">
@@ -405,61 +406,33 @@
           </div>
         </div>
 
-        <div class="section-title" id="contact">
-          <h2>Contact Us</h2>
-          <p>The views and suggestions of our clients matter to us. For a deeper understanding of our company, services and products, do not hesitate to contact us. Contact us below and we'll get back to you promptly.</p>
-        </div>
+        <div class="col-md-12 prod-heading" id="contact" data-aos="fade-up">
+          <h3>CONTACT US</h3>
+       </div>
 
         <div class="row" data-aos="fade-up" data-aos-delay="100">
 
-          <div class="col-lg-6">
-
-            <div class="row">
-              <div class="col-md-12">
-                <div class="info-box">
-                  <i class="bx bx-map"></i>
-                  <h3>Our Address</h3>
-                  <p>2638 Willard Dairy Road, Suite 112 High Point, NC 27265</p>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="info-box mt-4">
-                  <i class="bx bx-envelope"></i>
-                  <h3>Email Us</h3>
-                  <p><a href="mailto:office-admin@techunifi.com">office-admin@techunifi.com</a></p>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="info-box mt-4">
-                  <i class="bx bx-phone-call"></i>
-                  <h3>Call Us</h3>
-                  <p><a href="tel: +1 (336) 860 6061">+1 (336) 860 6061</a></p>
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-          <div class="col-lg-6">
             <form action="forms/contact.php" method="post" role="form" class="php-email-form">
               <div class="row">
-                <div class="col form-group">
-                  <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required>
+                <div class="col-md-4">
+                  <div class="col form-group">
+                    <input type="text" name="name" class="form-control" id="name" placeholder="Name" required>
+                  </div>
+                  <div class="col form-group">
+                    <input type="email" class="form-control" name="email" id="email" placeholder="Email" required>
+                  </div>
+                  <div class="col form-group">
+                    <input type="tel" class="form-control" name="tel" id="tel" placeholder="Phone" required>
+                  </div>
                 </div>
-                <div class="col form-group">
-                  <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" required>
-                </div>
-              </div>
 
-              <div class="form-group">
-                <textarea class="form-control" name="message"  placeholder="Message" required></textarea>
+
+              <div class="col-md-8 text-message">
+                <div class="form-group">
+                  <textarea class="form-control" name="message"  rows="7" placeholder="Message" required></textarea>
+                </div>
               </div>
-              <div class="my-3">
-                <div class="loading">Loading</div>
-                <div class="error-message"></div>
-                <div class="sent-message">Your message has been sent. Thank you!</div>
-              </div>
-              <div class="text-center"><button type="submit">Send Message</button></div>
+              <div class="text-center contact-submit" id="contact-submit"><button type="submit">Send Message</button></div>
             </form>
           </div>
 
@@ -480,7 +453,7 @@
         </div>
         <div class="col-md-7 ms-auto">
           <div class="row site-section pt-0">
-            <div class="col-md-6 mb-4 mb-md-0">
+            <div class="col-md-5 mb-4 mb-md-0">
               <h3>Navigation</h3>
               <ul class="list-unstyled links-footer">
                 <li><span class="bi bi-arrow-right"></span><a href="index.html">Home</a></li>
@@ -491,10 +464,22 @@
                 <li><span class="bi bi-arrow-right"></span><a href="#contact">Contact</a></li>
               </ul>
             </div>
-            <div class="col-md-6 mb-4 mb-md-0 social-us">
-              <h3>Follow Us</h3>
+            <div class="col-md-7 mb-4 mb-md-0 social-us">
+              <h3>Connect Us</h3>
+
               <div class="row">
- 
+                <ul class="list-unstyled connect-details">
+                  <li>
+                      <a href="javascript:void(0)"><span class="bi bi-geo"></span><b>Address:</b> <br>2638 Willard Dairy Road, Suite 112 High Point, NC 27265m</a>
+                      <br>
+                      <a href="mailto: office-admin@techunifi.com"><span class="bi bi-envelope"></span>office-admin@techunifi.com</a>
+                      <br>
+                      <a href="tel:+1 (336) 860 6061"><span class="bi bi-phone"></span>+1 (336) 860 6061</a>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="row">
                 <div class="col-md-12">
                   <ul class="list-unstyled">
                     <li>
@@ -510,12 +495,16 @@
                 </div>
               </div>
               
-              <div class="copy-right">
-                <h4>Copy Right</h4>
-                <p>© 2024 techunifi - All rights reserved. <br>Powered by aries connects world</p>
-              </div>
 
             </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="copy-right">
+            <p>Copy Right - © 2024 techunifi - All rights reserved. Powered by aries connects world</p>
           </div>
         </div>
       </div>

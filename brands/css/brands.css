@@ -45,7 +45,7 @@
   border: var(--border);
   border-radius: var(--border-radius);
   color: var(--gray);
-  background-color: var(--black);
+  background-color: var(--blue);
   padding: 8px 22px;
   letter-spacing: 2px;
   font-weight: 600;
@@ -80,7 +80,7 @@
   padding: 0;
 }
 .web-btn {
-  background-color: var(--black);
+  background-color: var(--blue);
   border-radius: var(--border-radius);
   border: var(--border);
   color: var(--gray);
@@ -135,7 +135,7 @@ section.brands-tab-section {
   padding: 80px 0 30px;
 }
 .brand-img-row .brand-tablinks{
-  background-color: var(--black);
+  background-color: var(--blue);
   color: var(--gray);
   border: var(--border);
   border-radius: var(--border-radius);
@@ -170,7 +170,7 @@ section.brands-tab-section {
   font-weight: 500;
 }
 .logo-para-button a:hover{
-  background-color: var(--black);
+  background-color: var(--blue);
   color: var(--gray);
 }
 .padding-above {
@@ -186,7 +186,7 @@ section.brands-tab-section {
 .color-img {
   display: flex;
   gap: 20px;
-  align-items: center;
+  align-items: flex-start;
 }
 .color-img p {
   margin: 0;
@@ -242,13 +242,81 @@ section.brands-tab-section {
   font-weight: 500;
 }
 .flyer-download:hover{
-  background-color: var(--black);
+  background-color: var(--blue);
   color: var(--gray);
 }
 .flyer-img {
   max-width: 85%;
   margin: 0 auto;
   display: block;
+}
+
+/* Change Order */
+.changeOrderPage .brand-tab.container {
+  display: flex;
+  text-align: center;
+  align-items: center;
+}
+.changeOrderPage section.ticket-form {
+  padding: 0px 0 50px 0;
+}
+.change-order-para {
+  max-width: 314px;
+  margin: 0 auto 10px;
+  padding: 10px 0 15px;
+  font-size: 18px;
+  letter-spacing: 0.4px;
+}
+.change-order-link {
+  margin: 10px 0 0 0;
+  display: inline-block;
+  font-size: 18px;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  color: #2A7AFF;
+}
+.change-order-link:hover{
+  color: #2A7AFF;
+  text-decoration: underline;
+}
+.changeOrderPage .Brand-Password  .pass-heading {
+  font-size: 29px;
+  font-weight: 600;
+}
+.changeOrderPage .Brand-Password .modal-content {
+  margin: 10% auto;
+}
+.sub-tab-section .tab a.sub-tablinks {
+  padding: 10px 15px;
+  font-size: 12px;
+}
+.letter-main .left-para-logo{
+  padding: 0;
+}
+.letter-main .disc{
+  list-style-type: disc;
+}
+.letter-main .right-letter-content {
+  display: flex;
+  justify-content: center;
+}
+.elements-right {
+  max-width: 70%;
+  display: block;
+  margin: 0 auto;
+  font-size: 25px;
+  font-weight: 800;
+}
+.elements-right-content .flyer-img.img1{
+  margin: 40px auto;
+  max-width: 40%;
+}
+.elements-right-content .flyer-img.img2{
+  margin: 90px auto 40px;
+  max-width: 70%;
+}
+.elements-right-content .flyer-img.img3{
+  margin: 90px auto;
 }
 
 
@@ -274,7 +342,7 @@ section.brands-tab-section {
 }
 .brandsPage .mobileFixedBrand .brand-tab {
   padding: 0;
-  display: flex;
+  /* display: flex; */
   align-items: center;
   justify-content: center;
 }
@@ -355,6 +423,44 @@ section.brands-tab-section {
 .email-phone-chat a span {
   padding: 0 10px 0 0;
 }
+.changeOrderPage .brand-tablinks {
+  padding: 10px 5px 5px;
+  font-size: 12px;
+}
+.changeOrderPage .cont-row-head h4 {
+  font-size: 22px;
+}
+.changeOrderPage .brand-tablinks p {
+  font-size: 12px;
+  letter-spacing: 0.9px;
+}
+.changeOrderPage .web-btn {
+  font-size: 12px;
+}
+.heading-brand {
+  padding: 50px 0 0 0;
+}
+.elements-right {
+  max-width: 100%;
+}
+.elements-main .heading-brand .left-para-logo~br{
+   display: none;
+}
+.elements-main .heading-brand .left-para-logo{
+  margin: 0 0 20px 0;
+}
+.elements-right-content {
+  margin: 25px 0 0 0;
+}
+.elements-right-content .flyer-img.img1,
+.elements-right-content .flyer-img.img2,
+.elements-right-content .flyer-img.img3 {
+  margin: 40px auto;
+  max-width: 100%;
+}
+.elements-right-content .flyer-img~br {
+  display: none;
+}
 
 }
 
@@ -406,6 +512,26 @@ section.brands-tab-section {
   .logo-para-button p {
     max-width: 264px;
   }
+  .changeOrderPage .logo {
+    margin-right: 0;
+    padding: 10px 0;
+  }
+  .changeOrderPage .brand-tablinks {
+    padding: 10px 8px;
+    font-size: 12px;
+  }
+  .changeOrderPage section.sub-tab-section {
+    padding: 30px 0;
+  }
+  .changeOrderPage section.ticket-form {
+    padding: 0px 0 50px 0;
+  }
+  .elements-right-content {
+    margin: 25px 0 0 0;
+  }
+  .elements-right {
+    max-width: 100%;
+  }
 
 }
 
@@ -426,4 +552,17 @@ section.brands-tab-section {
   .logo-para-button p {
     max-width: 328px;
   }
+}
+
+@media only screen and (min-width: 1024px) and (max-width: 1199.9px){
+  .changeOrderPage .brand-tablinks {
+    padding: 10px 28px;
+  }
+  .changeOrderPage section.sub-tab-section {
+    padding: 30px 0;
+  }
+  .changeOrderPage section.ticket-form {
+    padding: 0px 0 50px 0;
+  }
+
 }

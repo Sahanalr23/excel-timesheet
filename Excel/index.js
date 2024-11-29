@@ -108,18 +108,21 @@
 //     console.log(`Server running on http://localhost:${port}`);
 // });
 
-
+const { google } = require('googleapis');
 const express = require('express');
 const cors = require('cors');
 const xlsx = require('xlsx');
 const fs = require('fs');
 const path = require('path');
+const SCOPES = ['https://www.googleapis.com/auth/drive.file'];
+const credentials = require('./credentials.json'); 
 
 const app = express();
 const port = 3000;
 
 app.use(cors());
 app.use(express.json());
+
 
 
 // Utility function to wait for a specified time (in ms)
@@ -143,59 +146,52 @@ const readFileWithRetry = async (filePath, retries = 5, delay = 1000) => {
     throw new Error('Failed to read the file after multiple attempts');
 };
 
-app.post('/submit-timesheet', async (req, res) => {
-    const formData = req.body;
-    console.log('Form Data Received:', formData); // Log the incoming data
-
-    const filePath = path.join(__dirname, 'timesheet.xlsx');
-    let workbook, worksheet;
-
-    try {
-        if (!formData.propertyName || !formData.description || !formData.timeIn || !formData.timeOut || !formData.date) {
-            throw new Error("Missing required fields.");
-        }
-
-        // Check if the file exists
-        if (fs.existsSync(filePath)) {
-            // Try reading the file with retry logic
-            workbook = await readFileWithRetry(filePath);
-            
-            // Check if sheet exists
-            if (!workbook.Sheets['Timesheet']) {
-                const newData = [
-                    ['Property Name', 'Description', 'Time In', 'Time Out', 'Date'],
-                    [formData.propertyName, formData.description, formData.timeIn, formData.timeOut, formData.date]
-                ];
-                worksheet = xlsx.utils.aoa_to_sheet(newData);
-                workbook.Sheets['Timesheet'] = worksheet;
-            } else {
-                worksheet = workbook.Sheets['Timesheet'];
-                const existingData = xlsx.utils.sheet_to_json(worksheet, { header: 1 });
-                existingData.push([formData.propertyName, formData.description, formData.timeIn, formData.timeOut, formData.date]);
-                worksheet = xlsx.utils.aoa_to_sheet(existingData);
-                workbook.Sheets['Timesheet'] = worksheet;
-            }
-        } else {
-            // Create a new file if it doesn't exist
-            workbook = xlsx.utils.book_new();
-            const newData = [
-                ['Property Name', 'Description', 'Time In', 'Time Out', 'Date'],
-                [formData.propertyName, formData.description, formData.timeIn, formData.timeOut, formData.date]
-            ];
-            worksheet = xlsx.utils.aoa_to_sheet(newData);
-            workbook.Sheets['Timesheet'] = worksheet;
-        }
-
-        // Write back to the file
-        xlsx.writeFile(workbook, filePath);
-        res.send('Form submitted successfully! Excel file updated.');
-
-    } catch (error) {
-        console.error('Error:', error.message);
-        res.status(400).send({ error: error.message });
-    }
+const auth = new google.auth.GoogleAuth({
+    keyFile: './credentials.json',
+    scopes: SCOPES,
 });
 
+const drive = google.drive({ version: 'v3', auth });
+
+const uploadToGoogleDrive = async (filePath, fileName) => {
+    const fileMetadata = {
+        name: fileName,
+        parents: ['1vIkOdDxVgCzRjISU6itd0H6-4TWGcbBT'], // Replace 'your-folder-id' with the actual folder ID
+    };
+    const media = {
+        mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        body: fs.createReadStream(filePath),
+    };
+
+    const response = await drive.files.create({
+        resource: fileMetadata,
+        media: media,
+        fields: 'id, webViewLink',
+    });
+    return response.data;
+};
+
+
+
+app.post('/submit-timesheet', async (req, res) => {
+    try {
+        // Save Excel locally (your existing logic)
+        const filePath = path.join(__dirname, 'timesheet.xlsx');
+        const fileName = 'timesheet.xlsx';
+
+        // Upload to Google Drive
+        const driveResponse = await uploadToGoogleDrive(filePath, fileName);
+        console.log('File uploaded to Google Drive:', driveResponse);
+
+        res.send({
+            message: 'Form submitted successfully!',
+            driveLink: driveResponse.webViewLink,
+        });
+    } catch (error) {
+        console.error('Error:', error.message);
+        res.status(500).send({ error: error.message });
+    }
+});
 
 
 app.listen(port, () => {

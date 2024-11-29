@@ -3084,6 +3084,16 @@ h3#termsModalLabel {
   opacity: 0.9;
 }
 
+.timeSheetPage .sub-tab-section .tab a.sub-tablinks:hover {
+  color: var(--blue);
+  font-weight: 700;
+}
+
+.timeSheetPage .sub-tab-section .tab a.sub-tablinks.active:hover {
+  color: var(--gray);
+  font-weight: 700;
+}
+
 
 /* ============ Responsive ==============*/
 /* Mobile */

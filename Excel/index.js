@@ -115,11 +115,10 @@ const xlsx = require('xlsx');
 const fs = require('fs');
 const path = require('path');
 const SCOPES = ['https://www.googleapis.com/auth/drive.file'];
+const credentials = require('./credentials.json'); 
 
 const app = express();
 const port = 3000;
-
-require('dotenv').config();
 
 app.use(cors());
 app.use(express.json());
@@ -147,12 +146,10 @@ const readFileWithRetry = async (filePath, retries = 5, delay = 1000) => {
     throw new Error('Failed to read the file after multiple attempts');
 };
 
-
 const auth = new google.auth.GoogleAuth({
-    keyFile: process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    scopes: ['https://www.googleapis.com/auth/drive.file'],
+    keyFile: './credentials.json',
+    scopes: SCOPES,
 });
-
 
 const drive = google.drive({ version: 'v3', auth });
 

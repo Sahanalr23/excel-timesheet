@@ -30,7 +30,7 @@ const drive = google.drive({ version: 'v3', auth });
 const uploadToGoogleDrive = async (filePath, fileName) => {
     const fileMetadata = {
         name: fileName,
-        parents: ['your-folder-id'], // Replace with your Google Drive folder ID
+        parents: ['1vIkOdDxVgCzRjISU6itd0H6-4TWGcbBT'], // Replace with your Google Drive folder ID
     };
     const media = {
         mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',

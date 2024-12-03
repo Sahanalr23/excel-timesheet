@@ -1,10 +1,6 @@
 const { google } = require('googleapis');
 const express = require('express');
 const cors = require('cors');
-const xlsx = require('xlsx');
-const fs = require('fs');
-const path = require('path');
-
 require('dotenv').config();
 
 const app = express();
@@ -19,48 +15,21 @@ if (!process.env.GOOGLE_CREDENTIALS_BASE64) {
     process.exit(1);
 }
 
-// Decode Base64 credentials and create a temporary JSON file
+// Decode Base64 credentials and set up Google Auth
 const credentialsBase64 = process.env.GOOGLE_CREDENTIALS_BASE64;
-const credentialsPath = path.join(__dirname, 'credentials.json');
-
-try {
-    fs.writeFileSync(credentialsPath, Buffer.from(credentialsBase64, 'base64').toString('utf8'));
-} catch (err) {
-    console.error('Error writing credentials file:', err.message);
-    process.exit(1);
-}
+const credentials = JSON.parse(Buffer.from(credentialsBase64, 'base64').toString('utf8'));
 
 const auth = new google.auth.GoogleAuth({
-    keyFile: credentialsPath,
-    scopes: ['https://www.googleapis.com/auth/drive.file'],
+    credentials,
+    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
 });
 
-const drive = google.drive({ version: 'v3', auth });
+const sheets = google.sheets({ version: 'v4', auth });
 
-const uploadToGoogleDrive = async (filePath, fileName) => {
-    if (!fs.existsSync(filePath)) {
-        throw new Error(`File not found: ${filePath}`);
-    }
+const SPREADSHEET_ID = '1Pxb8VfflfVp9MtYY4wlEwhuBpWY2ozva'; // Replace with your spreadsheet ID
+const SHEET_NAME = 'timesheet'; // Replace with your sheet name
 
-    const fileMetadata = {
-        name: fileName,
-        parents: ['1gmOgHwekz3DPJR-nbrJXo527MEJ0V4mv'], // Replace with your Google Drive folder ID
-    };
-
-    const media = {
-        mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        body: fs.createReadStream(filePath),
-    };
-
-    const response = await drive.files.create({
-        resource: fileMetadata,
-        media: media,
-        fields: 'id, webViewLink',
-    });
-
-    return response.data;
-};
-
+// Endpoint to handle form submission
 app.post('/submit-timesheet', async (req, res) => {
     try {
         const { propertyName, description, timeIn, timeOut, date } = req.body;
@@ -70,39 +39,26 @@ app.post('/submit-timesheet', async (req, res) => {
             return res.status(400).json({ error: 'All fields are required!' });
         }
 
-        // Generate Excel file locally
-        const filePath = path.join(__dirname, 'timesheet.xlsx');
-        const fileName = 'timesheet.xlsx';
-        const workbook = xlsx.utils.book_new();
-        const worksheetData = [
-            ['Property Name', 'Description', 'Time In', 'Time Out', 'Date'],
-            [propertyName, description, timeIn, timeOut, date],
-        ];
-        const worksheet = xlsx.utils.aoa_to_sheet(worksheetData);
-        xlsx.utils.book_append_sheet(workbook, worksheet, 'Timesheet');
-        xlsx.writeFile(workbook, filePath);
+        // Prepare data to append
+        const values = [[propertyName, description, timeIn, timeOut, date]];
 
-        // Upload the file to Google Drive
-        const driveResponse = await uploadToGoogleDrive(filePath, fileName);
-        console.log(`File uploaded successfully! File ID: ${driveResponse.id}, Web View Link: ${driveResponse.webViewLink}`);
+        // Append data to Google Sheet
+        await sheets.spreadsheets.values.append({
+            spreadsheetId: SPREADSHEET_ID,
+            range: `${SHEET_NAME}!A:E`, // Adjust range as needed
+            valueInputOption: 'USER_ENTERED', // Allows user-like input (e.g., date formatting)
+            resource: { values },
+        });
 
-        // Clean up local file
-        fs.unlinkSync(filePath);
+        console.log('Data appended successfully to Google Sheet.');
 
-        res.send({
+        res.status(200).json({
             message: 'Form submitted successfully!',
-            driveLink: driveResponse.webViewLink,
+            sheetLink: `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}`,
         });
     } catch (error) {
-        console.error('Error:', error.message);
-        res.status(500).send({ error: error.message });
-    }
-});
-
-// Clean up temporary credentials file on exit
-process.on('exit', () => {
-    if (fs.existsSync(credentialsPath)) {
-        fs.unlinkSync(credentialsPath);
+        console.error('Error appending data to Google Sheet:', error.message);
+        res.status(500).json({ error: 'Failed to append data to Google Sheet' });
     }
 });
 

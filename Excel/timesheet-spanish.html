@@ -361,13 +361,14 @@ function gtag(){dataLayer.push(arguments);}
   <!-- Template Main JS File -->
   <script src="../assets/js/main.js"></script>
 
-   
+      
   <script>
-    const form = document.getElementById('timesheet-form');
 
+    const form = document.getElementById('timesheet-form');
+    
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
-
+    
         const formData = {
             propertyName: form.propertyName.value,
             description: form.description.value,
@@ -375,7 +376,7 @@ function gtag(){dataLayer.push(arguments);}
             timeOut: form.timeOut.value,
             date: form.date.value,
         };
-
+    
         try {
             const response = await fetch('https://test-site-techunifi.onrender.com/submit-timesheet', {
                 method: 'POST',
@@ -384,21 +385,24 @@ function gtag(){dataLayer.push(arguments);}
                 },
                 body: JSON.stringify(formData),
             });
-
-            const result = await response.json();
+    
             if (response.ok) {
+                const result = await response.json();
                 alert('Form submitted successfully! View the file: ' + result.driveLink);
-                console.log('Google Drive Link:', result.driveLink);
             } else {
-                alert('Error: ' + result.error);
+                const error = await response.json();
+                alert('Error: ' + error.error);
             }
         } catch (error) {
             console.error('Error:', error);
             alert('Failed to submit form.');
         }
     });
-</script>
-
+          
+    
+     </script>
+    
+    
 
 
 </body>

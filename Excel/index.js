@@ -1,70 +1,50 @@
-const { google } = require('googleapis');
 const express = require('express');
-const cors = require('cors');
-const xlsx = require('xlsx');
-const fs = require('fs');
-const path = require('path');
-
-const SCOPES = ['https://www.googleapis.com/auth/drive.file'];
-
+const bodyParser = require('body-parser');
+const { google } = require('googleapis');
 const app = express();
-const port = 3000;
 
-require('dotenv').config();
+// Middleware to parse JSON request body
+app.use(bodyParser.json());
 
-app.use(cors());
-app.use(express.json());
-
-// Decode Base64 credentials and create a temporary JSON file
-const credentialsBase64 = process.env.GOOGLE_CREDENTIALS_BASE64;
-const credentialsPath = path.join(__dirname, 'credentials.json');
-fs.writeFileSync(credentialsPath, Buffer.from(credentialsBase64, 'base64').toString('utf8'));
-
+// Google Sheets setup
 const auth = new google.auth.GoogleAuth({
-    keyFile: credentialsPath,
-    scopes: SCOPES,
+    credentials: JSON.parse(process.env.GOOGLE_CREDENTIALS), // Use credentials from environment variable
+    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
 });
 
-const drive = google.drive({ version: 'v3', auth });
+const sheets = google.sheets({ version: 'v4', auth });
 
-const uploadToGoogleDrive = async (filePath, fileName) => {
-    const fileMetadata = {
-        name: fileName,
-        parents: ['1gmOgHwekz3DPJR-nbrJXo527MEJ0V4mv'], // Replace with your Google Drive folder ID
-    };
-    const media = {
-        mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        body: fs.createReadStream(filePath),
-    };
+const SPREADSHEET_ID = '1fxHplmfWgWn6bQaPfkR4kUGs34TGX_8f'; // Replace with your actual spreadsheet ID
+const SHEET_NAME = 'timesheet'; // Replace with your sheet name
 
-    const response = await drive.files.create({
-        resource: fileMetadata,
-        media: media,
-        fields: 'id, webViewLink',
-    });
-    return response.data;
-};
-
+// Endpoint to handle form submission
 app.post('/submit-timesheet', async (req, res) => {
     try {
-        // Your existing logic for handling the request and saving Excel locally
-        const filePath = path.join(__dirname, 'timesheet.xlsx');
-        const fileName = 'timesheet.xlsx';
+        const { propertyName, description, timeIn, timeOut, date } = req.body;
 
-        // Upload the file to Google Drive
-        const driveResponse = await uploadToGoogleDrive(filePath, fileName);
-        console.log('File uploaded to Google Drive:', driveResponse);
+        if (!propertyName || !description || !timeIn || !timeOut || !date) {
+            return res.status(400).json({ error: 'All fields are required!' });
+        }
 
-        res.send({
-            message: 'Form submitted successfully!',
-            driveLink: driveResponse.webViewLink,
+        const values = [[propertyName, description, timeIn, timeOut, date]];
+
+        await sheets.spreadsheets.values.append({
+            spreadsheetId: SPREADSHEET_ID,
+            range: `${SHEET_NAME}!A:E`, // Adjust range based on your sheet structure
+            valueInputOption: 'USER_ENTERED',
+            resource: { values },
+        });
+
+        return res.status(200).json({
+            message: 'Data submitted successfully!',
+            driveLink: `https://drive.google.com/drive/folders/1gmOgHwekz3DPJR-nbrJXo527MEJ0V4mv`, // Optional, replace with your folder link
         });
     } catch (error) {
-        console.error('Error:', error.message);
-        res.status(500).send({ error: error.message });
+        console.error('Error appending data to Google Sheet:', error);
+        return res.status(500).json({ error: 'Failed to append data to Google Sheet' });
     }
 });
 
-app.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}`);
-});
+// Start the server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));

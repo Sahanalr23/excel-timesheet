@@ -374,6 +374,7 @@ function gtag(){dataLayer.push(arguments);}
             timeOut: form.timeOut.value,
             date: form.date.value,
         };
+console.log('Form data being submitted:', formData);
 
         try {
             const response = await fetch('https://test-site-techunifi.onrender.com/submit-timesheet', {

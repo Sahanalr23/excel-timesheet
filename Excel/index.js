@@ -8,7 +8,7 @@ app.use(bodyParser.json());
 
 // Google Sheets setup
 const auth = new google.auth.GoogleAuth({
-    credentials: JSON.parse(process.env.GOOGLE_CREDENTIALS), // Use credentials from environment variable
+    credentials: JSON.parse(process.env.GOOGLE_CREDENTIALS),
     scopes: ['https://www.googleapis.com/auth/spreadsheets'],
 });
 
@@ -30,14 +30,14 @@ app.post('/submit-timesheet', async (req, res) => {
 
         await sheets.spreadsheets.values.append({
             spreadsheetId: SPREADSHEET_ID,
-            range: `${SHEET_NAME}!A:E`, // Adjust range based on your sheet structure
+            range: `${SHEET_NAME}!A:E`,
             valueInputOption: 'USER_ENTERED',
             resource: { values },
         });
 
         return res.status(200).json({
             message: 'Data submitted successfully!',
-            driveLink: `https://drive.google.com/drive/folders/1gmOgHwekz3DPJR-nbrJXo527MEJ0V4mv`, // Optional, replace with your folder link
+            driveLink: `https://drive.google.com/drive/folders/1gmOgHwekz3DPJR-nbrJXo527MEJ0V4mv`,
         });
     } catch (error) {
         console.error('Error appending data to Google Sheet:', error);

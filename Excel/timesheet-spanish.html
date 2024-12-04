@@ -397,7 +397,8 @@ function gtag(){dataLayer.push(arguments);}
     
             if (response.ok) {
                 const result = await response.json();
-                alert('Form submitted successfully! View the file: ' + result.driveLink);
+                alert('Form submitted successfully!');
+                form.reset(); // Clears all input fields
             } else {
                 const error = await response.json();
                 alert('Error: ' + error.error);

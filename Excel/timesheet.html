@@ -163,8 +163,15 @@ function gtag(){dataLayer.push(arguments);}
                                     <div class="col-md-12">
                                       <br><br>
 
+                                      <label for="userName">Your Name</label>
+                                      <input id="userName" name="userName" placeholder="Enter your Name" maxlength="40" size="20" type="text" required/>
+                                    </div>
+                                  </div>
+
+                                  <div class="row">
+                                    <div class="col-md-12">
                                       <label for="propertyName">Property Name</label>
-                                      <input id="propertyName" name="propertyName" placeholder="Property Name" maxlength="40" name="name" size="20" type="text" required/>
+                                      <input id="propertyName" name="propertyName" placeholder="Property Name" maxlength="40" size="20" type="text" required/>
                                     </div>
                                   </div>
                               
@@ -361,13 +368,15 @@ function gtag(){dataLayer.push(arguments);}
   <!-- Template Main JS File -->
   <script src="../assets/js/main.js"></script>
     
- <script>
+  <script>
+
 const form = document.getElementById('timesheet-form');
 
 form.addEventListener('submit', async (event) => {
     event.preventDefault();
 
     const formData = {
+        userName: form.userName.value,
         propertyName: form.propertyName.value,
         description: form.description.value,
         timeIn: form.timeIn.value,
@@ -386,8 +395,7 @@ form.addEventListener('submit', async (event) => {
 
         if (response.ok) {
             const result = await response.json();
-            alert('Form submitted successfully!');
-            form.reset(); // Clears all input fields
+            alert('Form submitted successfully! View the file: ' + result.driveLink);
         } else {
             const error = await response.json();
             alert('Error: ' + error.error);
@@ -397,7 +405,10 @@ form.addEventListener('submit', async (event) => {
         alert('Failed to submit form.');
     }
 });
-</script>
+      
+
+ </script>
+
 
 
 </body>

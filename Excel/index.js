@@ -1,16 +1,16 @@
-const { google } = require('googleapis');
 const express = require('express');
 const cors = require('cors');
 const xlsx = require('xlsx');
 const fs = require('fs');
 const path = require('path');
-
+const { google } = require('googleapis');
 require('dotenv').config();
 
 const app = express();
-const port = 3000;
+const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+// Middleware
+app.use(cors({ origin: 'https://jaykishanp.github.io', methods: ['GET', 'POST'], allowedHeaders: ['Content-Type'] }));
 app.use(express.json());
 
 // Verify GOOGLE_CREDENTIALS_BASE64 exists
@@ -22,7 +22,6 @@ if (!process.env.GOOGLE_CREDENTIALS_BASE64) {
 // Decode Base64 credentials and create a temporary JSON file
 const credentialsBase64 = process.env.GOOGLE_CREDENTIALS_BASE64;
 const credentialsPath = path.join(__dirname, 'credentials.json');
-
 try {
     fs.writeFileSync(credentialsPath, Buffer.from(credentialsBase64, 'base64').toString('utf8'));
 } catch (err) {
@@ -30,46 +29,74 @@ try {
     process.exit(1);
 }
 
+// Google Drive and Sheets setup
 const auth = new google.auth.GoogleAuth({
     keyFile: credentialsPath,
-    scopes: ['https://www.googleapis.com/auth/drive.file'],
+    scopes: ['https://www.googleapis.com/auth/drive.file', 'https://www.googleapis.com/auth/spreadsheets'],
 });
-
 const drive = google.drive({ version: 'v3', auth });
+const sheets = google.sheets({ version: 'v4', auth });
 
-// File ID of the existing Google Drive file
-const GOOGLE_DRIVE_FILE_ID = '1gmOgHwekz3DPJR-nbrJXo527MEJ0V4mv'; // Replace with the actual file ID of the sheet in Google Drive
+const SPREADSHEET_ID = '17T2qhkOar3gjAKu_gyCqMokOYwDJO2x5'; // Replace with your Google Sheet ID
+const SHEET_NAME = 'timesheet'; // Replace with your sheet name
+const DRIVE_FOLDER_ID = '1gmOgHwekz3DPJR-nbrJXo527MEJ0V4mv'; // Replace with your Google Drive folder ID
 
-const downloadFileFromDrive = async (fileId, destinationPath) => {
-    const dest = fs.createWriteStream(destinationPath);
-    await drive.files.get(
-        { fileId, alt: 'media' },
-        { responseType: 'stream' },
-        (err, { data }) => {
-            if (err) throw new Error(`Error downloading file: ${err.message}`);
-            data.pipe(dest);
-        }
-    );
-    return new Promise((resolve, reject) => {
-        dest.on('finish', () => resolve());
-        dest.on('error', (err) => reject(err));
-    });
+// Append data to the Google Sheet
+const appendToSheet = async (data) => {
+    try {
+        await sheets.spreadsheets.values.append({
+            spreadsheetId: SPREADSHEET_ID,
+            range: `${SHEET_NAME}!A:F`,
+            valueInputOption: 'USER_ENTERED',
+            resource: { values: [data] },
+        });
+        console.log('Data appended to Google Sheet successfully!');
+    } catch (error) {
+        console.error('Error appending data to Google Sheet:', error.message);
+        throw new Error('Failed to append data to Google Sheet');
+    }
 };
 
-const uploadToGoogleDrive = async (filePath, fileId) => {
+// Download Google Sheet as Excel file
+const downloadSheetAsExcel = async (filePath) => {
+    const response = await sheets.spreadsheets.get({
+        spreadsheetId: SPREADSHEET_ID,
+        includeGridData: false,
+    });
+
+    const sheetTitle = response.data.sheets[0].properties.title;
+
+    const rows = await sheets.spreadsheets.values.get({
+        spreadsheetId: SPREADSHEET_ID,
+        range: `${sheetTitle}!A:F`,
+    });
+
+    const workbook = xlsx.utils.book_new();
+    const worksheet = xlsx.utils.aoa_to_sheet(rows.data.values);
+    xlsx.utils.book_append_sheet(workbook, worksheet, 'Timesheet');
+    xlsx.writeFile(workbook, filePath);
+};
+
+// Upload file to Google Drive
+const uploadToGoogleDrive = async (filePath, fileName) => {
+    const fileMetadata = {
+        name: fileName,
+        parents: [DRIVE_FOLDER_ID],
+    };
     const media = {
         mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         body: fs.createReadStream(filePath),
     };
 
-    const response = await drive.files.update({
-        fileId: fileId,
-        media: media,
+    const response = await drive.files.create({
+        resource: fileMetadata,
+        media,
+        fields: 'id, webViewLink',
     });
-
     return response.data;
 };
 
+// API Endpoint to handle form submission
 app.post('/submit-timesheet', async (req, res) => {
     try {
         const { userName, propertyName, description, timeIn, timeOut, date } = req.body;
@@ -79,35 +106,29 @@ app.post('/submit-timesheet', async (req, res) => {
             return res.status(400).json({ error: 'All fields are required!' });
         }
 
-        // Download the existing Excel file
+        const data = [userName, propertyName, description, timeIn, timeOut, date];
+
+        // Append data to Google Sheet
+        await appendToSheet(data);
+
+        // Generate Excel file locally
         const filePath = path.join(__dirname, 'timesheet.xlsx');
-        await downloadFileFromDrive(GOOGLE_DRIVE_FILE_ID, filePath);
+        await downloadSheetAsExcel(filePath);
 
-        // Load the existing workbook and append the new data
-        const workbook = xlsx.readFile(filePath);
-        const worksheet = workbook.Sheets['Timesheet']; // Ensure the sheet name matches your actual sheet
-        const newRow = [userName, propertyName, description, timeIn, timeOut, date];
-        const existingData = xlsx.utils.sheet_to_json(worksheet, { header: 1 });
-        existingData.push(newRow);
-        const updatedWorksheet = xlsx.utils.aoa_to_sheet(existingData);
-        workbook.Sheets['Timesheet'] = updatedWorksheet;
-
-        // Save the updated workbook locally
-        xlsx.writeFile(workbook, filePath);
-
-        // Upload the updated file back to Google Drive
-        const driveResponse = await uploadToGoogleDrive(filePath, GOOGLE_DRIVE_FILE_ID);
+        // Upload Excel file to Google Drive
+        const driveResponse = await uploadToGoogleDrive(filePath, 'timesheet.xlsx');
+        console.log(`File uploaded to Google Drive: ${driveResponse.webViewLink}`);
 
         // Clean up local file
         fs.unlinkSync(filePath);
 
-        res.send({
+        res.json({
             message: 'Form submitted successfully!',
-            driveLink: `https://drive.google.com/file/d/${GOOGLE_DRIVE_FILE_ID}/view`,
+            driveLink: driveResponse.webViewLink,
         });
     } catch (error) {
         console.error('Error:', error.message);
-        res.status(500).send({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 
@@ -118,6 +139,7 @@ process.on('exit', () => {
     }
 });
 
-app.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}`);
+// Start server
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
 });

@@ -196,14 +196,14 @@ function gtag(){dataLayer.push(arguments);}
                                   <div class="row">
                                     <div class="col-md-12">
                                       <label for="date">Date</label>
-                                      <input id="date" name="date" size="20" type="date"/>
+                                      <input id="date" name="date" size="20" type="date" required/>
                                     </div>
                                   </div>
 
                                    <!-- Captcha -->
                             <div class="row" style="padding-bottom: 20px;">
                                 <div class="col-md-12">
-                                  <input type=hidden name='captcha_settings' value='{"keyname":"techunifiv2attempt3","fallback":"true","orgId":"00DHo000002fpJX","ts":""}'>
+                                  <input type=hidden name='captcha_settings' value='{"keyname":"techunifiv2attempt3","fallback":"true","orgId":"00DHo000002fpJX","ts":""}' required>
                                   <input type=hidden name="oid" value="00DHo000002fpJX">
                                   <input type=hidden name="retURL" value="http://">
                                   <div class="g-recaptcha" data-sitekey="6LfnZs4pAAAAAI9TPACWBCvx4O5CGV0tB7jHNRt1"></div>
@@ -395,7 +395,8 @@ form.addEventListener('submit', async (event) => {
 
         if (response.ok) {
             const result = await response.json();
-            alert('Form submitted successfully! View the file: ' + result.driveLink);
+            alert('Form submitted successfully!');
+            form.reset(); // Clears all input fields
         } else {
             const error = await response.json();
             alert('Error: ' + error.error);
@@ -409,6 +410,11 @@ form.addEventListener('submit', async (event) => {
 
  </script>
 
+<script>
+  if (window.location.pathname === '/Excel/timesheet.html') {
+    window.location.replace('/timesheet.html');
+  }
+</script>
 
 
 </body>

@@ -48,7 +48,7 @@ const appendToSheet = async (data) => {
     try {
         await sheets.spreadsheets.values.append({
             spreadsheetId: 'SPREADSHEET_ID', // Replace with your Google Sheet ID
-            range: 'Sheet1!A:F', // Adjust the range to match your sheet
+            range: 'timesheet!A:F', // Adjust the range to match your sheet
             valueInputOption: 'USER_ENTERED',
             resource: {
                 values: [data],

@@ -198,24 +198,41 @@ const DRIVE_FOLDER_ID = '1gmOgHwekz3DPJR-nbrJXo527MEJ0V4mv'; // Replace with you
 // Append data to the Google Sheet
 const appendToSheet = async (data) => {
     try {
-        // Debug: Check sheet details
-        const response = await sheets.spreadsheets.get({
+        // Fetch sheet details to get the sheet ID
+        const sheetDetails = await sheets.spreadsheets.get({
             spreadsheetId: SPREADSHEET_ID,
         });
-        console.log('Sheet details:', response.data);
 
-        await sheets.spreadsheets.values.append({
-            spreadsheetId: SPREADSHEET_ID, // Ensure you're using the correct spreadsheet ID
-            range: `${SHEET_NAME}!A:F`, // Ensure that the sheet and range are valid
-            valueInputOption: 'USER_ENTERED',
+        // Get the first sheet ID
+        const sheetId = sheetDetails.data.sheets.find(sheet => sheet.properties.title === SHEET_NAME)?.properties.sheetId;
+
+        if (!sheetId) {
+            throw new Error(`Sheet "${SHEET_NAME}" not found in the spreadsheet`);
+        }
+
+        // Prepare rows to insert
+        const rows = data.map(value => ({ values: [{ userEnteredValue: { stringValue: value } }] }));
+
+        // Use batchUpdate to insert rows
+        await sheets.spreadsheets.batchUpdate({
+            spreadsheetId: SPREADSHEET_ID,
             resource: {
-                values: [data],
+                requests: [
+                    {
+                        appendCells: {
+                            sheetId,
+                            rows: [{ values: rows }],
+                            fields: 'userEnteredValue',
+                        },
+                    },
+                ],
             },
         });
-        console.log('Data appended successfully!');
+
+        console.log('Data inserted successfully!');
     } catch (error) {
-        console.error('Error appending data to Google Sheet:', error.response?.data || error.message);
-        throw new Error('Failed to append data to Google Sheet');
+        console.error('Error inserting data to Google Sheet:', error.response?.data || error.message);
+        throw new Error('Failed to insert data to Google Sheet');
     }
 };
 

@@ -198,9 +198,15 @@ const DRIVE_FOLDER_ID = '1gmOgHwekz3DPJR-nbrJXo527MEJ0V4mv'; // Replace with you
 // Append data to the Google Sheet
 const appendToSheet = async (data) => {
     try {
+        // Debug: Check sheet details
+        const response = await sheets.spreadsheets.get({
+            spreadsheetId: SPREADSHEET_ID,
+        });
+        console.log('Sheet details:', response.data);
+
         await sheets.spreadsheets.values.append({
-            spreadsheetId: SPREADSHEET_ID, // Correct ID
-            range: `${SHEET_NAME}!A:F`, // Adjust based on your sheet
+            spreadsheetId: SPREADSHEET_ID, // Ensure you're using the correct spreadsheet ID
+            range: `${SHEET_NAME}!A:F`, // Ensure that the sheet and range are valid
             valueInputOption: 'USER_ENTERED',
             resource: {
                 values: [data],
@@ -212,6 +218,7 @@ const appendToSheet = async (data) => {
         throw new Error('Failed to append data to Google Sheet');
     }
 };
+
 
 // Download Google Sheet as Excel file
 const downloadSheetAsExcel = async (filePath) => {

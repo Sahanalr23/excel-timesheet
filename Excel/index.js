@@ -43,19 +43,24 @@ const DRIVE_FOLDER_ID = '1gmOgHwekz3DPJR-nbrJXo527MEJ0V4mv'; // Replace with you
 
 // Append data to the Google Sheet
 const appendToSheet = async (data) => {
+    const sheets = google.sheets({ version: 'v4', auth });
+
     try {
         await sheets.spreadsheets.values.append({
-            spreadsheetId: SPREADSHEET_ID,
-            range: `${SHEET_NAME}!A:F`,
+            spreadsheetId: 'SPREADSHEET_ID', // Replace with your Google Sheet ID
+            range: 'Sheet1!A:F', // Adjust the range to match your sheet
             valueInputOption: 'USER_ENTERED',
-            resource: { values: [data] },
+            resource: {
+                values: [data],
+            },
         });
-        console.log('Data appended to Google Sheet successfully!');
+        console.log('Data appended successfully!');
     } catch (error) {
         console.error('Error appending data to Google Sheet:', error.message);
         throw new Error('Failed to append data to Google Sheet');
     }
 };
+
 
 // Download Google Sheet as Excel file
 const downloadSheetAsExcel = async (filePath) => {

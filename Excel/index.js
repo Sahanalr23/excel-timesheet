@@ -46,7 +46,7 @@ const appendToSheet = async (data) => {
     try {
         await sheets.spreadsheets.values.append({
             spreadsheetId: SPREADSHEET_ID,
-            range: `${SHEET_NAME}!A:F`,
+            // range: `${SHEET_NAME}!A:F`,
             valueInputOption: 'USER_ENTERED',
             resource: { values: [data] },
         });

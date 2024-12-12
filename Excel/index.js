@@ -9,6 +9,9 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
+app.use(cors({
+    origin: 'https://sahanalr23.github.io' // Replace with your frontend's origin
+}));
 app.use(cors({ origin: 'https://sahanalr23.github.io/', methods: ['GET', 'POST'], allowedHeaders: ['Content-Type'] }));
 app.use(express.json());
 
